@@ -1,110 +1,162 @@
-" Initialization {{{
-" My autocmd group
-augroup myautocmd
-  autocmd!
-augroup END
+" vim:set ts=8 sts=2 sw=2 tw=0: (この行に関しては:help modelineを参照)
+"
+" An example for a Japanese version vimrc file.
+" 日本語版のデフォルト設定ファイル(vimrc) - Vim7用試作
+"
+" Last Change: 20-Feb-2009.
+" Maintainer:  MURAOKA Taro <koron@tka.att.ne.jp>
+"
+" 解説:
+" このファイルにはVimの起動時に必ず設定される、編集時の挙動に関する設定が書
+" かれています。GUIに関する設定はgvimrcに書かかれています。
+"
+" 個人用設定は_vimrcというファイルを作成しそこで行ないます。_vimrcはこのファ
+" イルの後に読込まれるため、ここに書かれた内容を上書きして設定することが出来
+" ます。_vimrcは$HOMEまたは$VIMに置いておく必要があります。$HOMEは$VIMよりも
+" 優先され、$HOMEでみつかった場合$VIMは読込まれません。
+"
+" 管理者向けに本設定ファイルを直接書き換えずに済ませることを目的として、サイ
+" トローカルな設定を別ファイルで行なえるように配慮してあります。Vim起動時に
+" サイトローカルな設定ファイル($VIM/vimrc_local.vim)が存在するならば、本設定
+" ファイルの主要部分が読み込まれる前に自動的に読み込みます。
+"
+" 読み込み後、変数g:vimrc_local_finishが非0の値に設定されていた場合には本設
+" 定ファイルに書かれた内容は一切実行されません。デフォルト動作を全て差し替え
+" たい場合に利用して下さい。
+"
+" 参考:
+"   :help vimrc
+"   :echo $HOME
+"   :echo $VIM
+"   :version
 
-" condition variables
-let g:is_windows = has('win32') || has('win64')
-let g:is_unix = has('unix')
-let g:is_gui = has('gui_running')
-let g:is_terminal = !g:is_gui
-let g:is_unicode = (&termencoding ==# 'utf-8' || &encoding == 'utf-8') && !(exists('g:discard_unicode') && g:discard_unicode != 0)
+"---------------------------------------------------------------------------
+" サイトローカルな設定($VIM/vimrc_local.vim)があれば読み込む。読み込んだ後に
+" 変数g:vimrc_local_finishに非0な値が設定されていた場合には、それ以上の設定
+" ファイルの読込を中止する。
+if 1 && filereadable($VIM . '/vimrc_local.vim')
+  unlet! g:vimrc_local_finish
+  source $VIM/vimrc_local.vim
+  if exists('g:vimrc_local_finish') && g:vimrc_local_finish != 0
+    finish
+  endif
+endif
 
-" must be set with multibyte strings
-scriptencoding utf-8
-" }}}
+"---------------------------------------------------------------------------
+" ユーザ優先設定($HOME/.vimrc_first.vim)があれば読み込む。読み込んだ後に変数
+" g:vimrc_first_finishに非0な値が設定されていた場合には、それ以上の設定ファ
+" イルの読込を中止する。
+if 0 && exists('$HOME') && filereadable($HOME . '/.vimrc_first.vim')
+  unlet! g:vimrc_first_finish
+  source $HOME/.vimrc_first.vim
+  if exists('g:vimrc_first_finish') && g:vimrc_first_finish != 0
+    finish
+  endif
+endif
 
-" Vim options {{{
-" ### Indent ### {{{
-" 新しい行のインデントを現在行と同じにする
-set autoindent
+"---------------------------------------------------------------------------
+" 日本語対応のための設定:
+"
+" ファイルを読込む時にトライする文字エンコードの順序を確定する。漢字コード自
+" 動判別機能を利用する場合には別途iconv.dllが必要。iconv.dllについては
+" README_w32j.txtを参照。ユーティリティスクリプトを読み込むことで設定される。
+"source $VIMRUNTIME/encode_japan.vim
+" メッセージを日本語にする (Windowsでは自動的に判断・設定されている)
+if !(has('win32') || has('mac')) && has('multi_lang')
+  if !exists('$LANG') || $LANG.'X' ==# 'X'
+    if !exists('$LC_CTYPE') || $LC_CTYPE.'X' ==# 'X'
+      language ctype ja_JP.eucJP
+    endif
+    if !exists('$LC_MESSAGES') || $LC_MESSAGES.'X' ==# 'X'
+      language messages ja_JP.eucJP
+    endif
+  endif
+endif
+" MacOS Xメニューの日本語化 (メニュー表示前に行なう必要がある)
+if has('mac')
+  set langmenu=japanese
+endif
+" 日本語入力用のkeymapの設定例 (コメントアウト)
+if has('keymap')
+  " ローマ字仮名のkeymap
+  "silent! set keymap=japanese
+  "set iminsert=0 imsearch=0
+endif
+" 非GUI日本語コンソールを使っている場合の設定
+if !has('gui_running') && &encoding != 'cp932' && &term == 'win32'
+  set termencoding=cp932
+endif
 
-" 高度なインデント
-set smartindent
+"---------------------------------------------------------------------------
+" メニューファイルが存在しない場合は予め'guioptions'を調整しておく
+if 1 && !filereadable($VIMRUNTIME . '/menu.vim') && has('gui_running')
+  set guioptions+=M
+endif
 
-" タブが対応する空白の数
-set tabstop=2
+"---------------------------------------------------------------------------
+" Bram氏の提供する設定例をインクルード (別ファイル:vimrc_example.vim)。これ
+" 以前にg:no_vimrc_exampleに非0な値を設定しておけばインクルードはしない。
+if 1 && (!exists('g:no_vimrc_example') || g:no_vimrc_example == 0)
+  if &guioptions !~# "M"
+    " vimrc_example.vimを読み込む時はguioptionsにMフラグをつけて、syntax on
+    " やfiletype plugin onが引き起こすmenu.vimの読み込みを避ける。こうしない
+    " とencに対応するメニューファイルが読み込まれてしまい、これの後で読み込
+    " まれる.vimrcでencが設定された場合にその設定が反映されずメニューが文字
+    " 化けてしまう。
+    set guioptions+=M
+    source $VIMRUNTIME/vimrc_example.vim
+    set guioptions-=M
+  else
+    source $VIMRUNTIME/vimrc_example.vim
+  endif
+endif
 
-" インデントでずれる幅
-set shiftwidth=2
-
-" タブキーでカーソルが動く幅
-set softtabstop=2
-
-" タブの代わりに空白を挿入
-set expandtab
-
-" 空白文字をいいかんじで挿入する
-set smarttab
-" }}}
-
-" ### Folding ### {{{
-" 折りたたみを示す列を表示
-set foldcolumn=1
-
-" 最初に折りたたみをなるべく開く
-set foldlevel=99
-
-" デフォルトの折りたたみ方法
-set foldmethod=marker
-
-" 折りたたまれたテキストの表示方法
-set foldtext=MyFoldText()
-" }}}
-
-" ### Search ### {{{
+"---------------------------------------------------------------------------
+" 検索の挙動に関する設定:
+"
+" 検索時に大文字小文字を無視 (noignorecase:無視しない)
+set ignorecase
+" 大文字小文字の両方が含まれている場合は大文字小文字を区別
+set smartcase
+"
 " ハイライトで検索
 set hlsearch
 nohlsearch
 
-" 大文字小文字を無視
-set ignorecase
-
 " インクリメンタル検索
 set incsearch
 
-" 大文字が入力されたら大文字小文字を区別する
-set smartcase
-" }}}
+"---------------------------------------------------------------------------
+" 編集に関する設定:
+"
+" タブの画面上での幅
+set tabstop=8
+" タブをスペースに展開しない (expandtab:展開する)
+set noexpandtab
+" 自動的にインデントする (noautoindent:インデントしない)
+set autoindent
+" バックスペースでインデントや改行を削除できるようにする
+set backspace=2
+" 検索時にファイルの最後まで行ったら最初に戻る (nowrapscan:戻らない)
+set wrapscan
+" 括弧入力時に対応する括弧を表示 (noshowmatch:表示しない)
+set showmatch
+" コマンドライン補完するときに強化されたものを使う(参照 :help wildmenu)
+set wildmenu
+" テキスト挿入中の自動折り返しを日本語に対応させる
+set formatoptions+=mM
+" 日本語整形スクリプト(by. 西岡拓洋さん)用の設定
+let format_allow_over_tw = 1	" ぶら下り可能幅
 
-" ### Buffer ### {{{
-" 外部でファイルが変更されたら自動で読みなおす
-"set autoread
+" 高度なインデント
+set smartindent
 
-" 隠れ状態にしない
-set nohidden
-
-" 漢には不要
-set noswapfile
-
-" on だと guard が複数回実行されてしまう問題がある
-set nowritebackup
-
-" 既存のファイルを開くときはとりあえず utf-8
-set fileencodings=utf-8,default,ucs-bom,latin1
+" 空白文字をいいかんじで挿入する
+set smarttab
 
 " Vim を終了しても undo の記録を残す
 set undofile undodir=~/.vimundo
 " }}}
-
-" ### View ### {{{
-" 色数
-set t_Co=256
-
-" コマンドラインの行数
-set cmdheight=3
-
-" 現在行の色を変える
-set cursorline
-let g:cursorline_flg = 1 " cursorline はウィンドウローカルなのでグローバルなフラグを用意しておく
-let g:cursorcolumn_flg = 0
-
-" ステータス行を常に表示
-set laststatus=2
-
-" 再描画しない (gitv.vim で推奨されている)
-set lazyredraw
 
 " 不可侵文字を可視化
 set list
@@ -119,9 +171,6 @@ set scrolloff=5
 " 入力したコマンドを画面下に表示
 set showcmd
 
-" 自動折り返ししない
-set textwidth=0
-
 " タブページのラベルを常に表示
 set showtabline=2
 
@@ -134,124 +183,88 @@ set fillchars=stl:\ ,stlnc:\ ,vert:\|,fold:-,diff:-
 " vim の継続行(\)のインデント量を 0 にする
 let g:vim_indent_cont = 0
 
-" シンプル・イズ・ベストなステータスライン
-set statusline=%f%M%R%H%W%q%{&ff=='unix'?'':',['.&ff.']'}%{&fenc=='utf-8'\|\|&fenc==''?'':',['.&fenc.']'}%{len(getqflist())==0?'':'\ [!]'}%=%(\|%3p%%%)
 
-" 補完メニューで preview しない
-set completeopt-=preview
-" }}}
+"---------------------------------------------------------------------------
+" GUI固有ではない画面表示の設定:
+"
+" 行番号を非表示 (number:表示)
+set nonumber
+" ルーラーを表示 (noruler:非表示)
+set ruler
+" タブや改行を表示 (list:表示)
+set nolist
+" どの文字でタブや改行を表示するかを設定
+"set listchars=tab:>-,extends:<,trail:-,eol:<
+" 長い行を折り返して表示 (nowrap:折り返さない)
+set wrap
+" 常にステータス行を表示 (詳細は:he laststatus)
+set laststatus=2
+" コマンドラインの高さ (Windows用gvim使用時はgvimrcを編集すること)
+set cmdheight=2
+" コマンドをステータス行に表示
+set showcmd
+" タイトルを表示
+set title
+" 画面を黒地に白にする (次行の先頭の " を削除すれば有効になる)
+"colorscheme evening " (Windows用gvim使用時はgvimrcを編集すること)
 
-" ### Input ### {{{
-" バックスペースで削除できる文字
-set backspace=indent,eol,start
+"---------------------------------------------------------------------------
+" ファイル操作に関する設定:
+"
+" バックアップファイルを作成しない (次行の先頭の " を削除すれば有効になる)
+"set nobackup
 
-" ヤンクなどで * レジスタにも書き込む
-set clipboard=unnamed
 
-" ヤンクなどで + レジスタにも書き込む
-if has('unnamedplus')
-  set clipboard+=unnamedplus
+"---------------------------------------------------------------------------
+" ファイル名に大文字小文字の区別がないシステム用の設定:
+"   (例: DOS/Windows/MacOS)
+"
+if filereadable($VIM . '/vimrc') && filereadable($VIM . '/ViMrC')
+  " tagsファイルの重複防止
+  set tags=./tags,tags
 endif
 
-" マッピングの受付時間 (<Leader> とか)
-set timeout
-set timeoutlen=1000
-
-" キーコードの受付時間 (<Esc> とか)
-set ttimeoutlen=100
-
-" 矩形選択を可能にする
-set virtualedit& virtualedit+=block
-
-" 行連結で変なことをさせない
-set nojoinspaces
-
-" 折り返した行の表示
-if g:is_unicode
-  let &showbreak = "\u21b3 "
-else
-  let &showbreak = "`-"
-endif
-" }}}
-
-" ### Command ### {{{
-" コマンドライン補完
-set wildmenu
-
-" コマンドライン補完の方法
-set wildmode=longest:full,full
-
-" コマンドの履歴の保存数
-set history=2000
-" }}}
-
-" ### Miscellaneous ### {{{
-" <C-a> や <C-x> で数値を増減させるときに8進数を無効にする
-set nrformats-=octal
-
-" 行をまたいでカーソル移動
-set whichwrap&
-set whichwrap+=h,l
-
-" 日本語ヘルプ
-set helplang=ja
-
-" K でヘルプを引く
-set keywordprg=:help
-
-" swap への書き込みや CursorHold 発生の間隔
-set updatetime=1000
-
-" いろんなコマンドの後にカーソルを先頭に移動させない
-set nostartofline
-" }}}
-" }}}
-"
-"
-"
-" シンタックス情報の取得
-function! GetSyntaxID(transparent)
-  let synid = synID(line("."), col("."), 1)
-  if a:transparent
-    return synIDtrans(synid)
-  else
-    return synid
+"---------------------------------------------------------------------------
+" コンソールでのカラー表示のための設定(暫定的にUNIX専用)
+if has('unix') && !has('gui_running')
+  let uname = system('uname')
+  if uname =~? "linux"
+    set term=builtin_linux
+  elseif uname =~? "freebsd"
+    set term=builtin_cons25
+  elseif uname =~? "Darwin"
+"    set term=beos-ansi
+"  else
+    set term=builtin_xterm
   endif
-endfunction
-function! GetSyntaxAttr(synid)
-  let name = synIDattr(a:synid, "name")
-  let ctermfg = synIDattr(a:synid, "fg", "cterm")
-  let ctermbg = synIDattr(a:synid, "bg", "cterm")
-  let guifg = synIDattr(a:synid, "fg", "gui")
-  let guibg = synIDattr(a:synid, "bg", "gui")
-  return {
-        \ "name": name,
-        \ "ctermfg": ctermfg,
-        \ "ctermbg": ctermbg,
-        \ "guifg": guifg,
-        \ "guibg": guibg}
-endfunction
-function! GetSyntaxInfo()
-  let baseSyn = GetSyntaxAttr(GetSyntaxID(0))
-  echo "name: " . baseSyn.name .
-        \ " ctermfg: " . baseSyn.ctermfg .
-        \ " ctermbg: " . baseSyn.ctermbg .
-        \ " guifg: " . baseSyn.guifg .
-        \ " guibg: " . baseSyn.guibg
-  let linkedSyn = GetSyntaxAttr(GetSyntaxID(1))
-  echo "link to"
-  echo "name: " . linkedSyn.name .
-        \ " ctermfg: " . linkedSyn.ctermfg .
-        \ " ctermbg: " . linkedSyn.ctermbg .
-        \ " guifg: " . linkedSyn.guifg .
-        \ " guibg: " . linkedSyn.guibg
-endfunction
-command! SyntaxInfo call GetSyntaxInfo()
+  unlet uname
+endif
+
+"---------------------------------------------------------------------------
+" コンソール版で環境変数$DISPLAYが設定されていると起動が遅くなる件へ対応
+if !has('gui_running') && has('xterm_clipboard')
+  set clipboard=exclude:cons\\\|linux\\\|cygwin\\\|rxvt\\\|screen
+endif
+
+"---------------------------------------------------------------------------
+" プラットホーム依存の特別な設定
+
+" WinではPATHに$VIMが含まれていないときにexeを見つけ出せないので修正
+if has('win32') && $PATH !~? '\(^\|;\)' . escape($VIM, '\\') . '\(;\|$\)'
+  let $PATH = $VIM . ';' . $PATH
+endif
+
+if has('mac')
+  " Macではデフォルトの'iskeyword'がcp932に対応しきれていないので修正
+  set iskeyword=@,48-57,_,128-167,224-235
+endif
+
+" Copyright (C) 2007 KaoriYa/MURAOKA Taro
+
+so $VIMRUNTIME/mswin.vim
 
 
-
-
-" NeoBandle
+" ### NeoBandle ### {{{
 if has('vim_starting')
   set nocompatible
   set runtimepath+=~/.vim/bundle/neobundle.vim
@@ -300,6 +313,21 @@ NeoBundle 'kannokanno/previm'
 "open-browser.vim
 NeoBundle 'tyru/open-browser.vim'
 
+"NERDTree
+"\eでファイルブラウザを開く
+NeoBundle 'scrooloose/nerdtree'
+map <silent> <leader>e :NERDTreeToggle<cr>
+
+"taglist
+NeoBundle 'vim-scripts/taglist.vim'
+let Tlist_Show_One_File = 1
+let Tlist_Use_Right_Window = 1
+let Tlist_Exit_OnlyWindow = 1
+map <silent> <leader>E :TlistToggle<cr>
+
+"tagbar
+"NeoBundle 'majutsushi/tagbar'
+
 call neobundle#end()
 
 filetype plugin indent on
@@ -311,5 +339,6 @@ if !has('vim_starting')
   " .vimrcを読み込み直した時の為の設定
   call neobundle#call_hook('on_source')
 endif
+" }}}
 
 
