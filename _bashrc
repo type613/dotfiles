@@ -1,0 +1,32 @@
+export PATH=$HOME/macports/bin:$HOME/macports/sbin:$PATH
+export MANPATH=$HOME/macports/share/man:$MANPATH
+export PERL5LIB=$HOME/macports/lib/perl5/5.8.8:$HOME/macports/lib/perl5/vendor_perl/5.8.8:$PERL5LIB
+
+export PATH=$PATH:$HOME/android-sdk/platform-tools
+export ANDROID_SDK=$HOME/android-sdk
+
+#Javaの言語設定をUTF-8に
+#alias javac='javac -J-Dfile.encoding=UTF-8'
+export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8
+
+#vimモード
+set -o vi
+
+#lsのカラー設定
+case "${OSTYPE}" in
+  darwin*)
+    alias ls="ls -G"
+    alias ll="ls -lG"
+    alias la="ls -laG"
+    ;;
+  linux*)
+    alias ls='ls --color'
+    alias ll='ls -l --color'
+    alias la='ls -la --color'
+  ;;
+esac 
+
+#go言語設定
+export GOROOT=/usr/local/opt/go/libexec
+export GOPATH=$HOME/go
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
