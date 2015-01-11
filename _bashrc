@@ -30,3 +30,6 @@ esac
 export GOROOT=/usr/local/opt/go/libexec
 export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
+export SVN_EDITOR=vi
+

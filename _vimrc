@@ -263,6 +263,37 @@ endif
 
 so $VIMRUNTIME/mswin.vim
 
+"Custom Settting
+set sw=8
+if &t_Co > 1
+  syntax on
+endif
+set showcmd
+set showmatch
+set matchtime=2
+set wildmenu
+set textwidth=0
+set wrap
+highlight ZenkakuSpace cterm=underline ctermfg=lightblue guibg=darkgray
+match ZenkakuSpace /　/
+
+" ステータスラインに表示する情報の指定
+"set statusline=%n\:%y%F\ \|%{(&fenc!=''?&fenc:&enc).'\|'.&ff.'\|'}%m%r%=<%l/%L:%p%%>
+" ステータスラインの色
+"highlight StatusLine   term=NONE cterm=NONE ctermfg=black ctermbg=white
+
+set vb t_vb=
+
+
+se backupext=.bak
+"se nohls
+
+nmap <C-p> :bp<CR>
+nmap <C-n> :bn<CR>
+
+
+
+
 
 " ### NeoBandle ### {{{
 if has('vim_starting')
@@ -295,6 +326,27 @@ set helplang=ja,en
 
 "Unite
 NeoBundle 'Shougo/unite.vim.git'
+" 入力モードで開始する
+" let g:unite_enable_start_insert=1
+" バッファ一覧
+nnoremap <silent> ,ub :<C-u>Unite buffer<CR>
+" ファイル一覧
+nnoremap <silent> ,uf :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
+" レジスタ一覧
+nnoremap <silent> ,ur :<C-u>Unite -buffer-name=register register<CR>
+" 最近使用したファイル一覧
+nnoremap <silent> ,um :<C-u>Unite file_mru<CR>
+" 常用セット
+nnoremap <silent> ,uu :<C-u>Unite buffer file_mru<CR>
+" 全部乗せ
+nnoremap <silent> ,ua :<C-u>UniteWithBufferDir -buffer-name=files buffer file_mru bookmark file<CR>
+
+" ウィンドウを分割して開く
+au FileType unite nnoremap <silent> <buffer> <expr> <C-j> unite#do_action('split')
+au FileType unite inoremap <silent> <buffer> <expr> <C-j> unite#do_action('split')
+" ウィンドウを縦に分割して開く
+au FileType unite nnoremap <silent> <buffer> <expr> <C-l> unite#do_action('vsplit')
+au FileType unite inoremap <silent> <buffer> <expr> <C-l> unite#do_action('vsplit')
 
 "カラースキーム
 NeoBundle 'junegunn/seoul256.vim.git'
@@ -340,5 +392,30 @@ if !has('vim_starting')
   call neobundle#call_hook('on_source')
 endif
 " }}}
+
+colorscheme default
+
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_color_change_perdent = 10
+let g:indent_guides_guide_size = 1
+"let g:indent_guide_auto_colors = 0
+hi IndentGuideOdd ctermbg=black
+hi IndentGuideEven ctermbg=darkgrey
+"autocmd VimEnter,Colorscheme * : hi IndentGuideOdd guibg=red ctermbg=3
+"autocmd VimEnter,Colorscheme * : hi IndentGuideEven guibg=green ctermbg=4
+
+if !exists(":DiffOrig")
+	command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
+	\ | wincmd p | diffthis
+endif
+
+"バッファリストは:lsか:buffersで確認
+" ノーマルモードでbpでバッファリストのひとつ前のバッファを開く
+"nnoremap <silent>bp :bprevious<CR>
+" ノーマルモードでbnでバッファリストの次のバッファを開く
+"nnoremap <silent>bn :bnext<CR>
+" ノーマルモードでbbで直前のバッファを開く
+"nnoremap <silent>bb :b#<CR>
+
 
 
