@@ -33,3 +33,5 @@ export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
 export SVN_EDITOR=vi
 
+source ~/.git-completion.bash
+
