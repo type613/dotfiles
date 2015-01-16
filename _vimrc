@@ -380,6 +380,12 @@ map <silent> <leader>E :TlistToggle<cr>
 "tagbar
 "NeoBundle 'majutsushi/tagbar'
 
+""caw
+"\cでコメントアウト/インを切り替える。
+NeoBundle "tyru/caw.vim.git"
+nmap <Leader>c <Plug>(caw:i:toggle)
+vmap <Leader>c <Plug>(caw:i:toggle)
+
 call neobundle#end()
 
 filetype plugin indent on
@@ -416,6 +422,11 @@ endif
 "nnoremap <silent>bn :bnext<CR>
 " ノーマルモードでbbで直前のバッファを開く
 "nnoremap <silent>bb :b#<CR>
+
+"Java用ハイライト追加
+let java_highlight_all=1
+let java_highlight_functions="style"
+let java_allow_cpp_keywords=1
 
 
 
