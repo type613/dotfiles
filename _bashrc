@@ -1,6 +1,7 @@
 export PATH=$HOME/macports/bin:$HOME/macports/sbin:$PATH
 export MANPATH=$HOME/macports/share/man:$MANPATH
 export PERL5LIB=$HOME/macports/lib/perl5/5.8.8:$HOME/macports/lib/perl5/vendor_perl/5.8.8:$PERL5LIB
+export PATH=/Applications/MacVim.app/Contents/MacOS:$PATH
 
 export PATH=$PATH:$HOME/android-sdk/platform-tools
 export ANDROID_SDK=$HOME/android-sdk
