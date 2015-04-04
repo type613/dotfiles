@@ -35,7 +35,6 @@ export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 export SVN_EDITOR=vi
 set -o vi
 
-source ~/.git-completion.bash
 source ~/.gypaver-completion.bash
 alias gypaver='python build.py'
 
