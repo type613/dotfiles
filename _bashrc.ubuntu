@@ -102,13 +102,14 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
+
 export ANDROID_NDK=$HOME/android-ndk
 export ANDROID_SDK=$HOME/android-sdk-linux
 export ANDROID_HOME=$ANDROID_SDK
 export PATH=$PATH:$ANDROID_SDK/platform-tools
 export PATH=$PATH:$ANDROID_SDK/tools
 export PATH=$PATH:$ANDROID_NDK
-export PATH=$PATH:$ANDROID_SDK/build-tools/21.1.1
+export PATH=$PATH:$ANDROID_SDK/build-tools/23.0.2
 
 #############export ORCA_TARGET_PLATFORM=gingerbread
 export ORCA_TARGET_PLATFORM=gingerbread
@@ -118,10 +119,11 @@ export HOST_AWK=/usr/bin/gawk
 export ORCA_SURFACEFLINGER_ROTATE=rotate0
 
 #JAVA
-JAVA_HOME=/usr/lib/jvm/java-6-sun
+#JAVA_HOME=/usr/lib/jvm/java-6-sun
+export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-i386
 #PATH=$PATH:$JAVA_HOME/bin
-CLASSPATH=$CLASSPATH:/usr/share/java/bcprov-jdk16-146.jar
-export CLASSPATH
+#CLASSPATH=$CLASSPATH:/usr/share/java/bcprov-jdk16-146.jar
+#export CLASSPATH
 #/JAVA
 
 PS1="[\u@ \W]\$ "
@@ -146,7 +148,7 @@ function share_history {
 	history -r
 }
 
-PROMPT_COMMAND='share_history'
+#PROMPT_COMMAND='share_history'
 shopt -u histappend
 export HISTSIZE=9999
 
