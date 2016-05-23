@@ -66,14 +66,13 @@ set noexpandtab
 set ignorecase
 " 大文字小文字の両方が含まれている場合は大文字小文字を区別
 set smartcase
-
-"インクリメンタルサーチ
-set incsearch
-
-"検索結果をハイライト表示
+"
+" ハイライトで検索
 set hlsearch
+nohlsearch
 
-"---------------------------------------------------------------------------
+" インクリメンタル検索
+set incsearch
 
 "---------------------------------------------------------------------------
 " 編集に関する設定:
@@ -95,7 +94,43 @@ set wildmenu
 " テキスト挿入中の自動折り返しを日本語に対応させる
 set formatoptions+=mM
 " 日本語整形スクリプト(by. 西岡拓洋さん)用の設定
-let format_allow_over_tw = 1    " ぶら下り可能幅
+let format_allow_over_tw = 1	" ぶら下り可能幅
+
+" 高度なインデント
+set smartindent
+
+" 空白文字をいいかんじで挿入する
+set smarttab
+
+" Vim を終了しても undo の記録を残す
+set undofile undodir=~/.vimundo
+" }}}
+
+" 不可侵文字を可視化
+set list
+set listchars=tab:>\ "
+
+" 行番号を表示 (相対)
+"set number relativenumber
+
+" 最低でも上下に表示する行数
+set scrolloff=5
+
+" 入力したコマンドを画面下に表示
+set showcmd
+
+" タブページのラベルを常に表示
+"set showtabline=2
+
+" 長い行を @ にさせない
+set display=lastline
+
+" 埋める文字
+set fillchars=stl:\ ,stlnc:\ ,vert:\|,fold:-,diff:-
+
+" vim の継続行(\)のインデント量を 0 にする
+let g:vim_indent_cont = 0
+
 
 "---------------------------------------------------------------------------
 " GUI固有ではない画面表示の設定:

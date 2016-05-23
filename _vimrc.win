@@ -172,7 +172,7 @@ set scrolloff=5
 set showcmd
 
 " タブページのラベルを常に表示
-set showtabline=2
+"set showtabline=2
 
 " 長い行を @ にさせない
 set display=lastline

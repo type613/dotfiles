@@ -172,7 +172,7 @@ set scrolloff=5
 set showcmd
 
 " タブページのラベルを常に表示
-set showtabline=2
+"set showtabline=2
 
 " 長い行を @ にさせない
 set display=lastline
@@ -383,6 +383,11 @@ if &diff
 endif
 let g:DiffUnit = "Word1"
 let g:DiffUpdate = 1
+
+"TypeScript
+call dein#add('leafgarland/typescript-vim')
+call dein#add('jason0x43/vim-js-indent')
+call dein#add('clausreinke/typescript-tools.vim')
 
 call dein#end()
 
