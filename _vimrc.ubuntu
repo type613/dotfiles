@@ -201,31 +201,44 @@ se backupext=.bak
 nmap <C-p> :bp<CR>
 nmap <C-n> :bn<CR>
 
+"plugin start
 
-
-" ### dein ### {{{
-if &compatible
+if !&compatible
   set nocompatible
 endif
-set runtimepath+=~/.vim/dein/repos/github.com/Shougo/dein.vim
 
-call dein#begin(expand('~/.vim/dein'))
+" reset augroup
+augroup MyAutoCmd
+  autocmd!
+augroup END
 
-"dein
-call dein#add('Shougo/dein.vim')
+" dein settings {{{
+" dein自体の自動インストール
+let s:cache_home = empty($XDG_CACHE_HOME) ? expand('~/.cache') : $XDG_CACHE_HOME
+let s:dein_dir = s:cache_home . '/dein'
+let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
+if !isdirectory(s:dein_repo_dir)
+  call system('git clone https://github.com/Shougo/dein.vim ' . shellescape(s:dein_repo_dir))
+endif
+let &runtimepath = s:dein_repo_dir .",". &runtimepath
+" プラグイン読み込み＆キャッシュ作成
+let s:toml_file = fnamemodify(expand('<sfile>'), ':h').'/.dein.toml'
+if dein#load_state(s:dein_dir)
+  call dein#begin(s:dein_dir, [$MYVIMRC, s:toml_file])
+  call dein#load_toml(s:toml_file)
+  call dein#end()
+  call dein#save_state()
+endif
+" 不足プラグインの自動インストール
+if has('vim_starting') && dein#check_install()
+  call dein#install()
+endif
+" }}}
 
-"ag.vim
-"先にbrew install agしておく
-"call dein#add('rking/ag.vim')
+"plugin end
 
-"previm
-"MarkDownファイルを開いて、:PrevimOpenするとブラウザで開く
-"call dein#add('kannokanno/previm')
-"open-browser.vim
-"call dein#add('tyru/open-browser.vim')
-
+"plugin setting
 "Unite
-call dein#add('Shougo/unite.vim')
 " 入力モードで開始する
  let g:unite_enable_start_insert=1
 " バッファ一覧
@@ -249,46 +262,21 @@ au FileType unite nnoremap <silent> <buffer> <expr> <C-l> unite#do_action('vspli
 au FileType unite inoremap <silent> <buffer> <expr> <C-l> unite#do_action('vsplit')
 
 "ヘルプの日本語化プラグイン
-call dein#add('vim-jp/vimdoc-ja')
 set helplang=ja,en
 
-"カラースキーム
-call dein#add('junegunn/seoul256.vim')
-
 "vim-markdown
-call dein#add('tpope/vim-markdown')
 au BufRead,BufNewFile *.md set filetype=markdown
 
 "NERDTree
-call dein#add('scrooloose/nerdtree')
-"\eでファイルブラウザを開く
-map <silent> <leader>e :NERDTreeToggle<cr>
+"Ctrl+eでファイルブラウザを開く
+map <silent> <C-e> :NERDTreeToggle<cr>
 
-"taglist
-"call dein#add('vim-scripts/taglist.vim')
-let Tlist_Show_One_File = 1
-let Tlist_Use_Right_Window = 1
-let Tlist_Exit_OnlyWindow = 1
-map <silent> <leader>E :TlistToggle<cr>
-
-"tagbar
-"call dein#add('majutsushi/tagbar')
-
-""caw
+"caw
 "\cでコメントアウト/インを切り替える。
-call dein#add("tyru/caw.vim")
 nmap <Leader>c <Plug>(caw:i:toggle)
 vmap <Leader>c <Plug>(caw:i:toggle)
 
-"vim-fugitive
-call dein#add('tpope/vim-fugitive')
-
-"vcscommand
-call dein#add('vcscommand.vim')
-
 "diffchar
-call dein#add('rickhowe/diffchar.vim')
-"vimdiffを起動した際自動的に単語単位の差分を有効にする
 if &diff
   augroup enable_diffchar
     autocmd!
@@ -298,12 +286,7 @@ endif
 let g:DiffUnit = "Word1"
 let g:DiffUpdate = 1
 
-call dein#end()
 
-"プラグインがインストールされているかチェック
-if dein#check_install()
-  call dein#install()
-endif
 
 
 " ステータスラインに表示する情報の指定
