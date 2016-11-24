@@ -1,0 +1,54 @@
+" 0.5.3 (created: 2007/12/21 19:26:07)
+" vim: set ft=vimperator:
+
+"+----------------------------------------------------------------------------------------+
+" 基本設定
+"+----------------------------------------------------------------------------------------+
+
+"メニュー/ツール/リンクを表示
+set guioptions=mTbr
+"ページ全体で検索語を強調表示
+set hlsearch
+"ビープ音を鳴らさずビジュアルベルを使用
+set visualbell
+"ビジュアルベルを無効化
+"set visualbellstyle=display:none;
+hi Bell display:none
+
+set wildoptions=auto
+
+set complete=Sbslhf
+set focuscontent
+set suggestengines=google
+let g:hintsio="iO"
+let g:hintchars="HJKLASDFGYUIOPQWERTNMZXCVB" 
+
+
+"ヒントのスタイルを指定
+hi Hint	font-family:monospace; font-size:14px;font-weight:bold; color:white; background-color:blue; border-color:ButtonShadow; border-width:0px; border-style:solid; padding:0px 1px 0px 1px; position:absolute;
+"ヒント(フォーカス時)のスタイルを指定
+"set focusedhintstyle=z-index:5000; font-family:monospace; font-size:14px; color:ButtonText; background-color:ButtonShadow; border-color:ButtonShadow; border-width:1px; border-style:solid; padding:0px 1px 0px 1px; position:absolute;
+
+
+hi HintElem		color: Black;		background: PowderBlue;	
+hi HintActive		color: White;		background: SteelBlue;	
+"+----------------------------------------------------------------------------------------+
+" キーマップ設定
+"+----------------------------------------------------------------------------------------+
+
+"yで選択範囲をコピー
+"map y :echo 'Yank!'<CR>Y
+"j/kの移動量を5倍に
+map j 5<C-e>
+map k 5<C-y>
+"H/Lでタブ移動
+noremap H gT
+noremap L gt
+
+"h/lで履歴移動
+noremap h <A-Left>
+noremap l <A-Right>
+
+map s :tabopen<space>google<space>
+
+
