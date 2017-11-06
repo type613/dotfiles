@@ -33,6 +33,9 @@ repo = 'tyru/caw.vim'
 repo = 'tpope/vim-fugitive'
 
 [[plugins]]
+repo = 'lambdalisue/gina.vim'
+
+[[plugins]]
 repo = 'vcscommand.vim'
 
 [[plugins]]
