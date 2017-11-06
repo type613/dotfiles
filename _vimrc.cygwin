@@ -389,6 +389,8 @@ call dein#add('leafgarland/typescript-vim')
 call dein#add('jason0x43/vim-js-indent')
 call dein#add('clausreinke/typescript-tools.vim')
 
+call dein#add('lambdalisue/gina.vim')
+
 call dein#end()
 
 "プラグインがインストールされているかチェック

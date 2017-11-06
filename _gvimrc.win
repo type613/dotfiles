@@ -3,7 +3,7 @@
 " An example for a Japanese version gvimrc file.
 " 日本語版のデフォルトGUI設定ファイル(gvimrc) - Vim7用試作
 "
-" Last Change: 17-May-2016.
+" Last Change: 03-Oct-2016.
 " Maintainer:  MURAOKA Taro <koron@tka.att.ne.jp>
 "
 " 解説:
@@ -174,7 +174,7 @@ if has('printer')
 endif
 
 " Copyright (C) 2007 KaoriYa/MURAOKA Taro
-so $VIMRUNTIME/mswin.vim
+"so $VIMRUNTIME/mswin.vim
 
 map <silent> sy :call YanktmpYank()<CR>
 map <silent> sp :call YanktmpPaste_p()<CR>

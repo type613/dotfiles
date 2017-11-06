@@ -3,7 +3,7 @@
 " An example for a Japanese version vimrc file.
 " 日本語版のデフォルト設定ファイル(vimrc) - Vim7用試作
 "
-" Last Change: 20-Feb-2009.
+" Last Change: 06-Nov-2017.
 " Maintainer:  MURAOKA Taro <koron@tka.att.ne.jp>
 "
 " 解説:
@@ -261,7 +261,7 @@ endif
 
 " Copyright (C) 2007 KaoriYa/MURAOKA Taro
 
-so $VIMRUNTIME/mswin.vim
+"so $VIMRUNTIME/mswin.vim
 
 "Custom Settting
 set sw=8
@@ -383,6 +383,8 @@ if &diff
 endif
 let g:DiffUnit = "Word1"
 let g:DiffUpdate = 1
+
+call dein#add('lambdalisue/gina.vim')
 
 call dein#end()
 
