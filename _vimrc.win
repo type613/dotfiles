@@ -441,4 +441,7 @@ let java_allow_cpp_keywords=1
 
 set nofixeol
 
+set spell
+set spelllang=en,cjk
+
 
