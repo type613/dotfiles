@@ -3,7 +3,7 @@
 " An example for a Japanese version gvimrc file.
 " 日本語版のデフォルトGUI設定ファイル(gvimrc) - Vim7用試作
 "
-" Last Change: 03-Oct-2016.
+" Last Change: 08-Nov-2017.
 " Maintainer:  MURAOKA Taro <koron@tka.att.ne.jp>
 "
 " 解説:
@@ -184,7 +184,7 @@ se backupext=.bak
 se nohls
 
 "半透明
-autocmd GUIEnter * set transparency=200
+"autocmd GUIEnter * set transparency=200
 
 "ビジュアルベル無効
 set novb

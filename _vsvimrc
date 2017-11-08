@@ -1,0 +1,4 @@
+set clipboard=unnamed
+nnoremap <C-Tab> gt
+nnoremap <C-S-Tab> gT
+

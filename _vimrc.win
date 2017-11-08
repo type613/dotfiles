@@ -3,7 +3,7 @@
 " An example for a Japanese version vimrc file.
 " 日本語版のデフォルト設定ファイル(vimrc) - Vim7用試作
 "
-" Last Change: 06-Nov-2017.
+" Last Change: 08-Nov-2017.
 " Maintainer:  MURAOKA Taro <koron@tka.att.ne.jp>
 "
 " 解説:
@@ -385,6 +385,7 @@ let g:DiffUnit = "Word1"
 let g:DiffUpdate = 1
 
 call dein#add('lambdalisue/gina.vim')
+call dein#add('fatih/vim-go')
 
 call dein#end()
 
@@ -438,5 +439,6 @@ let java_highlight_all=1
 let java_highlight_functions="style"
 let java_allow_cpp_keywords=1
 
+set nofixeol
 
 
